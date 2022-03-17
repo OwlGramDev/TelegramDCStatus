@@ -51,7 +51,7 @@ func TelegramServerChecker() *TgCheckerClient {
 }
 
 func (tg *TgCheckerClient) readBackup() {
-	r, err := os.ReadFile(BackupFolder)
+	r, err := os.ReadFile(backupFolder)
 	if err == nil {
 		var recovery []TelegramDCStatus
 		_ = json.Unmarshal(r, &recovery)
@@ -61,7 +61,7 @@ func (tg *TgCheckerClient) readBackup() {
 
 func (tg *TgCheckerClient) doBackup() {
 	r, _ := json.Marshal(tg.statusDC)
-	_ = os.WriteFile(BackupFolder, r, 0644)
+	_ = os.WriteFile(backupFolder, r, 0644)
 }
 
 func (tg *TgCheckerClient) runDownloadWithTimeout(fileId int32) int8 {
@@ -169,7 +169,7 @@ func (tg *TgCheckerClient) Run() {
 					tg.statusDC[i].LastDown,
 					tg.statusDC[i].LastLag,
 				})
-				_ = os.Remove(TdSessionFiles + "/td_files/animations/st-" + strconv.Itoa(int(tg.filesDC[i].id)) + ".gif.mp4")
+				_ = os.Remove(tdSessionFiles + "/td_files/animations/st-" + strconv.Itoa(int(tg.filesDC[i].id)) + ".gif.mp4")
 			} else {
 				listStatus = append(listStatus, tg.statusDC[i])
 			}
@@ -187,7 +187,7 @@ func (tg *TgCheckerClient) Run() {
 func SendData(data []TelegramDCStatus) *string {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
-	req.SetRequestURI(ApiEndpoint + "sendData")
+	req.SetRequestURI(apiEndpoint + "sendData")
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
 	marshal, _ := json.Marshal(data)

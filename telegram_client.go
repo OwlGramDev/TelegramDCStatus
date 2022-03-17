@@ -14,14 +14,14 @@ func Client() *ClientContext {
 		APIHash:             sessionInfo.ApiHASH,
 		SystemLanguageCode:  "en",
 		DeviceModel:         "OwlGram Server Checker",
-		SystemVersion:       ClientVersion,
+		SystemVersion:       clientVersion,
 		ApplicationVersion:  "1.7.0",
 		UseMessageDatabase:  true,
 		UseFileDatabase:     true,
 		UseChatInfoDatabase: true,
 		UseTestDataCenter:   false,
-		DatabaseDirectory:   TdSessionFiles + "/td_session",
-		FileDirectory:       TdSessionFiles + "/td_files",
+		DatabaseDirectory:   tdSessionFiles + "/td_session",
+		FileDirectory:       tdSessionFiles + "/td_files",
 		IgnoreFileNames:     false,
 	})
 	return &ClientContext{
