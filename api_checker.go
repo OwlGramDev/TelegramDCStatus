@@ -3,14 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	tdLib "github.com/Arman92/go-tdlib"
-	"github.com/go-ping/ping"
-	"github.com/valyala/fasthttp"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	tdLib "github.com/Arman92/go-tdlib"
+	"github.com/go-ping/ping"
+	"github.com/valyala/fasthttp"
 )
 
 func TelegramServerChecker() *TgCheckerClient {
