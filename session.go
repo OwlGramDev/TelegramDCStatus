@@ -9,12 +9,12 @@ import (
 )
 
 func initSession() SessionData {
-	if _, err := os.Stat(consts.tdSessionFiles); os.IsNotExist(err) {
-		_ = os.Mkdir(consts.tdSessionFiles, 0644)
-		_ = os.Mkdir(consts.tdSessionFiles+"/td_session", 0644)
-		_ = os.Mkdir(consts.tdSessionFiles+"/td_files", 0644)
+	if _, err := os.Stat(consts.TdSessionFiles); os.IsNotExist(err) {
+		_ = os.Mkdir(consts.TdSessionFiles, 0644)
+		_ = os.Mkdir(consts.TdSessionFiles+"/td_session", 0644)
+		_ = os.Mkdir(consts.TdSessionFiles+"/td_files", 0644)
 	}
-	r, err := os.ReadFile(consts.sessionFolder)
+	r, err := os.ReadFile(consts.SessionFolder)
 	if err == nil {
 		var session SessionData
 		_ = json.Unmarshal(r, &session)
@@ -31,7 +31,7 @@ func initSession() SessionData {
 			apiHash,
 		}
 		w, _ := json.Marshal(session)
-		_ = os.WriteFile(consts.sessionFolder, w, 0644)
+		_ = os.WriteFile(consts.SessionFolder, w, 0644)
 		return session
 	}
 }
