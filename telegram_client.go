@@ -33,12 +33,12 @@ func Client() *ClientContext {
 
 func (context *ClientContext) Login() {
 	for {
-		currentState, _ := context.client.Authorize()
+		currentState, _ := context.Client.Authorize()
 		if currentState.GetAuthorizationStateEnum() == tdLib.AuthorizationStateWaitPhoneNumberType {
 			fmt.Print("\nEnter Phone Number: ")
 			var number string
 			_, _ = fmt.Scanln(&number)
-			_, err := context.client.SendPhoneNumber(number)
+			_, err := context.Client.SendPhoneNumber(number)
 			if err != nil {
 				fmt.Printf("Error sending phone number: %v", err)
 			}
@@ -46,7 +46,7 @@ func (context *ClientContext) Login() {
 			fmt.Print("\nEnter Code: ")
 			var code string
 			_, _ = fmt.Scanln(&code)
-			_, err := context.client.SendAuthCode(code)
+			_, err := context.Client.SendAuthCode(code)
 			if err != nil {
 				fmt.Printf("Error sending auth code : %v", err)
 			}
@@ -54,7 +54,7 @@ func (context *ClientContext) Login() {
 			fmt.Print("\nEnter Password: ")
 			var password string
 			_, _ = fmt.Scanln(&password)
-			_, err := context.client.SendAuthPassword(password)
+			_, err := context.Client.SendAuthPassword(password)
 			if err != nil {
 				fmt.Printf("Error sending auth password: %v", err)
 			}
@@ -65,27 +65,27 @@ func (context *ClientContext) Login() {
 }
 
 func (context *ClientContext) DownloadFile(fileId int32) error {
-	_, err := context.client.DownloadFile(fileId, 1, 0, 0, true)
+	_, err := context.Client.DownloadFile(fileId, 1, 0, 0, true)
 	return err
 }
 
 func (context *ClientContext) CancelDownloadFile(fileId int32) {
-	_, _ = context.client.CancelDownloadFile(fileId, false)
+	_, _ = context.Client.CancelDownloadFile(fileId, false)
 }
 
 func (context *ClientContext) GetMessageList() []tdLib.Message {
-	_, err := context.client.GetChat(context.chatId)
+	_, err := context.Client.GetChat(context.ChatID)
 	if err != nil {
-		_, _ = context.client.SearchPublicChat(context.username)
+		_, _ = context.Client.SearchPublicChat(context.Username)
 	}
-	lastMessage, _ := context.client.GetChatHistory(context.chatId, 0, 0, 100, false)
-	messagesList, _ := context.client.GetChatHistory(context.chatId, lastMessage.Messages[0].ID, 0, 100, false)
+	lastMessage, _ := context.Client.GetChatHistory(context.ChatID, 0, 0, 100, false)
+	messagesList, _ := context.Client.GetChatHistory(context.ChatID, lastMessage.Messages[0].ID, 0, 100, false)
 	messagesList.Messages = append(messagesList.Messages, lastMessage.Messages[0])
 	return messagesList.Messages
 }
 
 type ClientContext struct {
-	client   *tdLib.Client
-	chatId   int64
-	username string
+	Client   *tdLib.Client
+	ChatID   int64
+	Username string
 }

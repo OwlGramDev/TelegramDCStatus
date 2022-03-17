@@ -16,7 +16,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func TelegramServerChecker() *TgCheckerClient {
+func TelegramServerChecker() *types.TelegramCheckerClient {
 	instance := Client()
 	instance.Login()
 	var listDCInfo []types.TelegramDCInfo
@@ -40,7 +40,7 @@ func TelegramServerChecker() *TgCheckerClient {
 		}
 	}
 	fmt.Println("\nStarted Telegram DC Checker!")
-	return &TgCheckerClient{
+	return &types.TelegramCheckerClient{
 		instance,
 		listDCInfo,
 		listStatus,
@@ -49,25 +49,25 @@ func TelegramServerChecker() *TgCheckerClient {
 	}
 }
 
-func (tg *TgCheckerClient) readBackup() {
+func (tg *types.TelegramCheckerClient) readBackup() {
 	r, err := os.ReadFile(backupFolder)
 	if err == nil {
 		var recovery []types.TelegramDCStatus
 		_ = json.Unmarshal(r, &recovery)
-		tg.statusDC = recovery
+		tg.StatusDC = recovery
 	}
 }
 
-func (tg *TgCheckerClient) doBackup() {
-	r, _ := json.Marshal(tg.statusDC)
+func (tg *types.TelegramCheckerClient) doBackup() {
+	r, _ := json.Marshal(tg.StatusDC)
 	_ = os.WriteFile(backupFolder, r, 0644)
 }
 
-func (tg *TgCheckerClient) runDownloadWithTimeout(fileId int32) int8 {
+func (tg *types.TelegramCheckerClient) runDownloadWithTimeout(fileId int32) int8 {
 	waitChannel := make(chan int8, 1)
 	start := time.Now()
 	go func() {
-		err := tg.client.DownloadFile(fileId)
+		err := tg.Client.DownloadFile(fileId)
 		if err != nil {
 			waitChannel <- 0
 		} else {
@@ -82,12 +82,12 @@ func (tg *TgCheckerClient) runDownloadWithTimeout(fileId int32) int8 {
 			return res
 		}
 	case <-time.After(10 * time.Second):
-		tg.client.CancelDownloadFile(fileId)
+		tg.Client.CancelDownloadFile(fileId)
 		return 0
 	}
 }
 
-func (tg *TgCheckerClient) pingWithTimeout(address string) int64 {
+func (tg *types.TelegramCheckerClient) pingWithTimeout(address string) int64 {
 	waitChannel := make(chan int64, 1)
 	pingRequest, err := ping.NewPinger(address)
 	if err != nil {
@@ -109,28 +109,28 @@ func (tg *TgCheckerClient) pingWithTimeout(address string) int64 {
 	}
 }
 
-func (tg *TgCheckerClient) Run() {
+func (tg *types.TelegramCheckerClient) Run() {
 	tg.readBackup()
 	updateFloodWait := int64(60 * 10)
 	for {
-		tg.isRefreshing = true
+		tg.IsRefreshing = true
 		var listStatus []types.TelegramDCStatus
 		t := time.Now()
-		for i := 0; i < len(tg.filesDC); i++ {
+		for i := 0; i < len(tg.FilesDC); i++ {
 			canUpdate := false
-			ipAddress, err := telegramInfo.GetIPFromDC(tg.statusDC[i].Id)
+			ipAddress, err := telegramInfo.GetIPFromDC(tg.StatusDC[i].Id)
 			if err != nil {
 				log.Println("[TelegramDC]", err)
 				continue
 			}
 			pingResult := tg.pingWithTimeout(ipAddress.String())
-			if (t.Unix() - tg.statusDC[i].LastDown) >= updateFloodWait {
+			if (t.Unix() - tg.StatusDC[i].LastDown) >= updateFloodWait {
 				canUpdate = true
-			} else if (t.Unix() - tg.statusDC[i].LastLag) >= updateFloodWait {
+			} else if (t.Unix() - tg.StatusDC[i].LastLag) >= updateFloodWait {
 				canUpdate = true
 			}
 			if canUpdate {
-				res := tg.runDownloadWithTimeout(tg.filesDC[i].FileID)
+				res := tg.runDownloadWithTimeout(tg.FilesDC[i].FileID)
 				if pingResult == 2 && res == 1 {
 					res = 1
 				} else if pingResult == 2 && res == 2 {
@@ -145,27 +145,27 @@ func (tg *TgCheckerClient) Run() {
 					}
 				}
 				if res == 0 {
-					tg.statusDC[i].LastDown = t.Unix()
+					tg.StatusDC[i].LastDown = t.Unix()
 				} else if res == 2 {
-					tg.statusDC[i].LastLag = t.Unix()
+					tg.StatusDC[i].LastLag = t.Unix()
 				}
 				listStatus = append(listStatus, types.TelegramDCStatus{
-					tg.filesDC[i].ID,
+					tg.FilesDC[i].ID,
 					pingResult,
 					res,
-					tg.statusDC[i].LastDown,
-					tg.statusDC[i].LastLag,
+					tg.StatusDC[i].LastDown,
+					tg.StatusDC[i].LastLag,
 				})
 
-				_ = os.Remove(fmt.Sprintf("%s/td_files/animations/st-%d.gif.mp4", tdSessionFiles, tg.filesDC[i].ID))
+				_ = os.Remove(fmt.Sprintf("%s/td_files/animations/st-%d.gif.mp4", tdSessionFiles, tg.FilesDC[i].ID))
 			} else {
-				listStatus = append(listStatus, tg.statusDC[i])
+				listStatus = append(listStatus, tg.StatusDC[i])
 			}
 		}
-		tg.statusDC = listStatus
-		tg.isRefreshing = false
+		tg.StatusDC = listStatus
+		tg.IsRefreshing = false
 		t = time.Now()
-		tg.lastRefresh = t.Unix()
+		tg.LastRefresh = t.Unix()
 		tg.doBackup()
 		SendData(listStatus)
 		time.Sleep(time.Second * time.Duration(60-t.Second()))
@@ -198,12 +198,4 @@ func SendData(data []types.TelegramDCStatus) string {
 	}
 
 	return string(resp.Body())
-}
-
-type TgCheckerClient struct {
-	client       *ClientContext
-	filesDC      []types.TelegramDCInfo
-	statusDC     []types.TelegramDCStatus
-	lastRefresh  int64
-	isRefreshing bool
 }
