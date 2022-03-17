@@ -1,27 +1,27 @@
 package client
 
 import (
-	"fmt"
-
+	"TelegramServerChecker/client/session"
+	"TelegramServerChecker/consts"
 	tdLib "github.com/Arman92/go-tdlib"
 )
 
-func Client() Context {
+func New() Context {
 	tdLib.SetLogVerbosityLevel(0)
-	sessionInfo := initSession()
+	sessionInfo := session.InitSession()
 	client := tdLib.NewClient(tdLib.Config{
 		APIID:               sessionInfo.ApiID,
 		APIHash:             sessionInfo.ApiHASH,
 		SystemLanguageCode:  "en",
 		DeviceModel:         "OwlGram Server Checker",
-		SystemVersion:       clientVersion,
+		SystemVersion:       consts.ClientVersion,
 		ApplicationVersion:  "1.7.0",
 		UseMessageDatabase:  true,
 		UseFileDatabase:     true,
 		UseChatInfoDatabase: true,
 		UseTestDataCenter:   false,
-		DatabaseDirectory:   tdSessionFiles + "/td_session",
-		FileDirectory:       tdSessionFiles + "/td_files",
+		DatabaseDirectory:   consts.TdSessionFiles + "/td_session",
+		FileDirectory:       consts.TdSessionFiles + "/td_files",
 		IgnoreFileNames:     false,
 	})
 	return Context{
