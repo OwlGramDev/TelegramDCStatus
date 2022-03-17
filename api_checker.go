@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"TelegramServerChecker/telegramInfo"
 	tdLib "github.com/Arman92/go-tdlib"
 	"github.com/go-ping/ping"
 	"github.com/valyala/fasthttp"
@@ -110,22 +111,6 @@ func (tg *TgCheckerClient) pingWithTimeout(address string) int64 {
 	}
 }
 
-func getIpById(id int8) string {
-	switch id {
-	case 1:
-		return "149.154.175.50"
-	case 2:
-		return "149.154.167.50"
-	case 3:
-		return "149.154.175.100"
-	case 4:
-		return "149.154.167.91"
-	case 5:
-		return "91.108.56.100"
-	}
-	return "???"
-}
-
 func (tg *TgCheckerClient) Run() {
 	tg.readBackup()
 	updateFloodWait := int64(60 * 10)
@@ -135,8 +120,12 @@ func (tg *TgCheckerClient) Run() {
 		t := time.Now()
 		for i := 0; i < len(tg.filesDC); i++ {
 			canUpdate := false
-			ipAddress := getIpById(tg.statusDC[i].Id)
-			pingResult := tg.pingWithTimeout(ipAddress)
+			ipAddress, err := telegramInfo.GetIPFromDC(tg.statusDC[i].Id)
+			if err != nil {
+				log.Println("[TelegramDC]", err)
+				continue
+			}
+			pingResult := tg.pingWithTimeout(ipAddress.String())
 			if (t.Unix() - tg.statusDC[i].LastDown) >= updateFloodWait {
 				canUpdate = true
 			} else if (t.Unix() - tg.statusDC[i].LastLag) >= updateFloodWait {
