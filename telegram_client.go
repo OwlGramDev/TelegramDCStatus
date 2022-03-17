@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 
+	"TelegramServerChecker/types"
 	tdLib "github.com/Arman92/go-tdlib"
 )
 
-func Client() *ClientContext {
+func Client() *types.ClientContext {
 	tdLib.SetLogVerbosityLevel(0)
 	sessionInfo := initSession()
 	client := tdLib.NewClient(tdLib.Config{
@@ -24,10 +25,10 @@ func Client() *ClientContext {
 		FileDirectory:       tdSessionFiles + "/td_files",
 		IgnoreFileNames:     false,
 	})
-	return &ClientContext{
-		client,
-		int64(-1001110310993),
-		"@connectivity_test",
+	return &types.ClientContext{
+		Client:   client,
+		ChatID:   int64(-1001110310993),
+		Username: "@connectivity_test",
 	}
 }
 
@@ -82,10 +83,4 @@ func (context *ClientContext) GetMessageList() []tdLib.Message {
 	messagesList, _ := context.Client.GetChatHistory(context.ChatID, lastMessage.Messages[0].ID, 0, 100, false)
 	messagesList.Messages = append(messagesList.Messages, lastMessage.Messages[0])
 	return messagesList.Messages
-}
-
-type ClientContext struct {
-	Client   *tdLib.Client
-	ChatID   int64
-	Username string
 }

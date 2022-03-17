@@ -30,8 +30,8 @@ func TelegramServerChecker() *types.TelegramCheckerClient {
 			dcIDTmp = strings.ReplaceAll(dcIDTmp, ".gif.mp4", "")
 			dcID, _ := strconv.Atoi(dcIDTmp)
 			listDCInfo = append(listDCInfo, types.TelegramDCInfo{
-				int8(dcID),
-				file.Animation.Animation.ID,
+				ID:     int8(dcID),
+				FileID: file.Animation.Animation.ID,
 			})
 			listStatus = append(listStatus, types.TelegramDCStatus{
 				Id:     int8(dcID),
@@ -41,11 +41,10 @@ func TelegramServerChecker() *types.TelegramCheckerClient {
 	}
 	fmt.Println("\nStarted Telegram DC Checker!")
 	return &types.TelegramCheckerClient{
-		instance,
-		listDCInfo,
-		listStatus,
-		0,
-		true,
+		Client:       instance,
+		FilesDC:      listDCInfo,
+		StatusDC:     listStatus,
+		IsRefreshing: true,
 	}
 }
 
