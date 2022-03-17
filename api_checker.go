@@ -156,7 +156,8 @@ func (tg *TgCheckerClient) Run() {
 					tg.statusDC[i].LastDown,
 					tg.statusDC[i].LastLag,
 				})
-				_ = os.Remove(tdSessionFiles + "/td_files/animations/st-" + strconv.Itoa(int(tg.filesDC[i].ID)) + ".gif.mp4")
+
+				_ = os.Remove(fmt.Sprintf("%s/td_files/animations/st-%d.gif.mp4", tdSessionFiles, tg.filesDC[i].ID))
 			} else {
 				listStatus = append(listStatus, tg.statusDC[i])
 			}
