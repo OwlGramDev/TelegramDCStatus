@@ -1,7 +1,7 @@
 package consts
 
-const clientVersion = "1.0.0"
-const tdSessionFiles = "./DcCheckerSession"
-const backupFolder = tdSessionFiles + "/tmpDcStatus.json"
-const sessionFolder = tdSessionFiles + "/session.json"
-const apiEndpoint = "https://api.owlgram.org/"
+const ClientVersion = "1.0.0"
+const TdSessionFiles = "./DcCheckerSession"
+const BackupFolder = TdSessionFiles + "/tmpDcStatus.json"
+const SessionFolder = TdSessionFiles + "/session.json"
+const ApiEndpoint = "https://api.owlgram.org/"
