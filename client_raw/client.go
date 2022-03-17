@@ -1,7 +1,7 @@
-package client
+package client_raw
 
 import (
-	"TelegramServerChecker/client/session"
+	"TelegramServerChecker/client_raw/session"
 	"TelegramServerChecker/consts"
 	tdLib "github.com/Arman92/go-tdlib"
 )
