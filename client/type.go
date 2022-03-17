@@ -1,10 +1,10 @@
-package types
+package client
 
 import (
 	tdLib "github.com/Arman92/go-tdlib"
 )
 
-type ClientContext struct {
+type Context struct {
 	Client   *tdLib.Client
 	ChatID   int64
 	Username string

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"TelegramServerChecker/consts"
 	"TelegramServerChecker/telegramInfo"
 	"TelegramServerChecker/types"
 	tdLib "github.com/Arman92/go-tdlib"
@@ -49,7 +50,7 @@ func TelegramServerChecker() *types.TelegramCheckerClient {
 }
 
 func (tg *types.TelegramCheckerClient) readBackup() {
-	r, err := os.ReadFile(backupFolder)
+	r, err := os.ReadFile(consts.backupFolder)
 	if err == nil {
 		var recovery []types.TelegramDCStatus
 		_ = json.Unmarshal(r, &recovery)
@@ -59,7 +60,7 @@ func (tg *types.TelegramCheckerClient) readBackup() {
 
 func (tg *types.TelegramCheckerClient) doBackup() {
 	r, _ := json.Marshal(tg.StatusDC)
-	_ = os.WriteFile(backupFolder, r, 0644)
+	_ = os.WriteFile(consts.backupFolder, r, 0644)
 }
 
 func (tg *types.TelegramCheckerClient) runDownloadWithTimeout(fileId int32) int8 {
@@ -156,7 +157,7 @@ func (tg *types.TelegramCheckerClient) Run() {
 					tg.StatusDC[i].LastLag,
 				})
 
-				_ = os.Remove(fmt.Sprintf("%s/td_files/animations/st-%d.gif.mp4", tdSessionFiles, tg.FilesDC[i].ID))
+				_ = os.Remove(fmt.Sprintf("%s/td_files/animations/st-%d.gif.mp4", consts.tdSessionFiles, tg.FilesDC[i].ID))
 			} else {
 				listStatus = append(listStatus, tg.StatusDC[i])
 			}
@@ -177,7 +178,7 @@ func SendData(data []types.TelegramDCStatus) string {
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
-	req.SetRequestURI(apiEndpoint + "sendData")
+	req.SetRequestURI(consts.apiEndpoint + "sendData")
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
 	marshal, _ := json.Marshal(data)

@@ -4,15 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"TelegramServerChecker/consts"
 )
 
 func initSession() SessionData {
-	if _, err := os.Stat(tdSessionFiles); os.IsNotExist(err) {
-		_ = os.Mkdir(tdSessionFiles, 0644)
-		_ = os.Mkdir(tdSessionFiles+"/td_session", 0644)
-		_ = os.Mkdir(tdSessionFiles+"/td_files", 0644)
+	if _, err := os.Stat(consts.tdSessionFiles); os.IsNotExist(err) {
+		_ = os.Mkdir(consts.tdSessionFiles, 0644)
+		_ = os.Mkdir(consts.tdSessionFiles+"/td_session", 0644)
+		_ = os.Mkdir(consts.tdSessionFiles+"/td_files", 0644)
 	}
-	r, err := os.ReadFile(sessionFolder)
+	r, err := os.ReadFile(consts.sessionFolder)
 	if err == nil {
 		var session SessionData
 		_ = json.Unmarshal(r, &session)
@@ -29,7 +31,7 @@ func initSession() SessionData {
 			apiHash,
 		}
 		w, _ := json.Marshal(session)
-		_ = os.WriteFile(sessionFolder, w, 0644)
+		_ = os.WriteFile(consts.sessionFolder, w, 0644)
 		return session
 	}
 }
