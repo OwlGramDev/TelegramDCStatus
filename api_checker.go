@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"TelegramServerChecker/telegramInfo"
+	"TelegramServerChecker/types"
 	tdLib "github.com/Arman92/go-tdlib"
 	"github.com/go-ping/ping"
 	"github.com/valyala/fasthttp"
@@ -19,7 +20,7 @@ func TelegramServerChecker() *TgCheckerClient {
 	instance := Client()
 	instance.Login()
 	var listDCInfo []TelegramDCInfo
-	var listStatus []TelegramDCStatus
+	var listStatus []types.TelegramDCStatus
 	messageList := instance.GetMessageList()
 	for i := 0; i < len(messageList); i++ {
 		message := messageList[i].Content
@@ -32,7 +33,7 @@ func TelegramServerChecker() *TgCheckerClient {
 				int8(dcID),
 				file.Animation.Animation.ID,
 			})
-			listStatus = append(listStatus, TelegramDCStatus{
+			listStatus = append(listStatus, types.TelegramDCStatus{
 				int8(dcID),
 				0,
 				-1,
@@ -54,7 +55,7 @@ func TelegramServerChecker() *TgCheckerClient {
 func (tg *TgCheckerClient) readBackup() {
 	r, err := os.ReadFile(backupFolder)
 	if err == nil {
-		var recovery []TelegramDCStatus
+		var recovery []types.TelegramDCStatus
 		_ = json.Unmarshal(r, &recovery)
 		tg.statusDC = recovery
 	}
@@ -116,7 +117,7 @@ func (tg *TgCheckerClient) Run() {
 	updateFloodWait := int64(60 * 10)
 	for {
 		tg.isRefreshing = true
-		var listStatus []TelegramDCStatus
+		var listStatus []types.TelegramDCStatus
 		t := time.Now()
 		for i := 0; i < len(tg.filesDC); i++ {
 			canUpdate := false
@@ -151,7 +152,7 @@ func (tg *TgCheckerClient) Run() {
 				} else if res == 2 {
 					tg.statusDC[i].LastLag = t.Unix()
 				}
-				listStatus = append(listStatus, TelegramDCStatus{
+				listStatus = append(listStatus, types.TelegramDCStatus{
 					tg.filesDC[i].id,
 					pingResult,
 					res,
@@ -173,7 +174,7 @@ func (tg *TgCheckerClient) Run() {
 	}
 }
 
-func SendData(data []TelegramDCStatus) string {
+func SendData(data []types.TelegramDCStatus) string {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 	resp := fasthttp.AcquireResponse()
@@ -204,7 +205,7 @@ func SendData(data []TelegramDCStatus) string {
 type TgCheckerClient struct {
 	client       *ClientContext
 	filesDC      []TelegramDCInfo
-	statusDC     []TelegramDCStatus
+	statusDC     []types.TelegramDCStatus
 	lastRefresh  int64
 	isRefreshing bool
 }
@@ -212,12 +213,4 @@ type TgCheckerClient struct {
 type TelegramDCInfo struct {
 	id     int8
 	fileId int32
-}
-
-type TelegramDCStatus struct {
-	Id       int8  `json:"dc_id"`
-	Ping     int64 `json:"ping"`
-	Status   int8  `json:"dc_status"`
-	LastDown int64 `json:"last_down"`
-	LastLag  int64 `json:"last_lag"`
 }
