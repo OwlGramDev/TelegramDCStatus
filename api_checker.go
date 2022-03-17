@@ -173,29 +173,32 @@ func (tg *TgCheckerClient) Run() {
 	}
 }
 
-func SendData(data []TelegramDCStatus) *string {
+func SendData(data []TelegramDCStatus) string {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
+	resp := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseResponse(resp)
+
 	req.SetRequestURI(apiEndpoint + "sendData")
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
 	marshal, _ := json.Marshal(data)
 	req.SetBody(marshal)
-	resp := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(resp)
+
 	err := fasthttp.Do(req, resp)
 	if err != nil {
-		return nil
+		return ""
 	}
+
 	statusCode := resp.StatusCode()
 	if statusCode != fasthttp.StatusOK {
 		if statusCode == fasthttp.StatusTooManyRequests {
 			log.Println("You have been banned from api.owlgram.org because you are flooding, wait and retry after 30 minutes")
 		}
-		return nil
+		return ""
 	}
-	body := string(resp.Body())
-	return &body
+
+	return string(resp.Body())
 }
 
 type TgCheckerClient struct {
