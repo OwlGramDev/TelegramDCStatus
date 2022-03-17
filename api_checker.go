@@ -34,11 +34,8 @@ func TelegramServerChecker() *TgCheckerClient {
 				file.Animation.Animation.ID,
 			})
 			listStatus = append(listStatus, types.TelegramDCStatus{
-				int8(dcID),
-				0,
-				-1,
-				0,
-				0,
+				Id:     int8(dcID),
+				Status: -1,
 			})
 		}
 	}
