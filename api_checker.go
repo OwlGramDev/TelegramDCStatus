@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"TelegramServerChecker/client"
 	"TelegramServerChecker/consts"
 	"TelegramServerChecker/telegramInfo"
 	"TelegramServerChecker/types"
@@ -18,7 +19,7 @@ import (
 )
 
 func TelegramServerChecker() *types.TelegramCheckerClient {
-	instance := Client()
+	instance := client.New()
 	instance.Login()
 	var listDCInfo []types.TelegramDCInfo
 	var listStatus []types.TelegramDCStatus

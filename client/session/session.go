@@ -8,7 +8,7 @@ import (
 	"TelegramServerChecker/consts"
 )
 
-func initSession() SessionData {
+func InitSession() Data {
 	if _, err := os.Stat(consts.TdSessionFiles); os.IsNotExist(err) {
 		_ = os.Mkdir(consts.TdSessionFiles, 0644)
 		_ = os.Mkdir(consts.TdSessionFiles+"/td_session", 0644)
@@ -16,7 +16,7 @@ func initSession() SessionData {
 	}
 	r, err := os.ReadFile(consts.SessionFolder)
 	if err == nil {
-		var session SessionData
+		var session Data
 		_ = json.Unmarshal(r, &session)
 		return session
 	} else {
@@ -26,7 +26,7 @@ func initSession() SessionData {
 		_, _ = fmt.Scanln(&apiId)
 		fmt.Print("Insert your API HASH: ")
 		_, _ = fmt.Scanln(&apiHash)
-		session := SessionData{
+		session := Data{
 			apiId,
 			apiHash,
 		}
@@ -34,9 +34,4 @@ func initSession() SessionData {
 		_ = os.WriteFile(consts.SessionFolder, w, 0644)
 		return session
 	}
-}
-
-type SessionData struct {
-	ApiID   string `json:"api_id"`
-	ApiHASH string `json:"api_hash"`
 }
