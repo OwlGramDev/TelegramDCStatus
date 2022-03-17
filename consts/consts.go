@@ -1,4 +1,4 @@
-package main
+package consts
 
 const clientVersion = "1.0.0"
 const tdSessionFiles = "./DcCheckerSession"
