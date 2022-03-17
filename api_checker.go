@@ -19,7 +19,7 @@ import (
 func TelegramServerChecker() *TgCheckerClient {
 	instance := Client()
 	instance.Login()
-	var listDCInfo []TelegramDCInfo
+	var listDCInfo []types.TelegramDCInfo
 	var listStatus []types.TelegramDCStatus
 	messageList := instance.GetMessageList()
 	for i := 0; i < len(messageList); i++ {
@@ -29,7 +29,7 @@ func TelegramServerChecker() *TgCheckerClient {
 			dcIDTmp := strings.ReplaceAll(file.Animation.FileName, "st-", "")
 			dcIDTmp = strings.ReplaceAll(dcIDTmp, ".gif.mp4", "")
 			dcID, _ := strconv.Atoi(dcIDTmp)
-			listDCInfo = append(listDCInfo, TelegramDCInfo{
+			listDCInfo = append(listDCInfo, types.TelegramDCInfo{
 				int8(dcID),
 				file.Animation.Animation.ID,
 			})
@@ -130,7 +130,7 @@ func (tg *TgCheckerClient) Run() {
 				canUpdate = true
 			}
 			if canUpdate {
-				res := tg.runDownloadWithTimeout(tg.filesDC[i].fileId)
+				res := tg.runDownloadWithTimeout(tg.filesDC[i].FileID)
 				if pingResult == 2 && res == 1 {
 					res = 1
 				} else if pingResult == 2 && res == 2 {
@@ -150,13 +150,13 @@ func (tg *TgCheckerClient) Run() {
 					tg.statusDC[i].LastLag = t.Unix()
 				}
 				listStatus = append(listStatus, types.TelegramDCStatus{
-					tg.filesDC[i].id,
+					tg.filesDC[i].ID,
 					pingResult,
 					res,
 					tg.statusDC[i].LastDown,
 					tg.statusDC[i].LastLag,
 				})
-				_ = os.Remove(tdSessionFiles + "/td_files/animations/st-" + strconv.Itoa(int(tg.filesDC[i].id)) + ".gif.mp4")
+				_ = os.Remove(tdSessionFiles + "/td_files/animations/st-" + strconv.Itoa(int(tg.filesDC[i].ID)) + ".gif.mp4")
 			} else {
 				listStatus = append(listStatus, tg.statusDC[i])
 			}
@@ -201,13 +201,8 @@ func SendData(data []types.TelegramDCStatus) string {
 
 type TgCheckerClient struct {
 	client       *ClientContext
-	filesDC      []TelegramDCInfo
+	filesDC      []types.TelegramDCInfo
 	statusDC     []types.TelegramDCStatus
 	lastRefresh  int64
 	isRefreshing bool
-}
-
-type TelegramDCInfo struct {
-	id     int8
-	fileId int32
 }
