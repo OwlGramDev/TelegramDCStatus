@@ -5,13 +5,14 @@ import (
 	"strconv"
 	"strings"
 
-	"TelegramServerChecker/client"
+	"TelegramServerChecker/client_raw"
+	"TelegramServerChecker/client_telegram"
 	"TelegramServerChecker/types"
 	tdLib "github.com/Arman92/go-tdlib"
 )
 
-func TelegramServerChecker() *types.TelegramCheckerClient {
-	instance := client.New()
+func TelegramServerChecker() *client_telegram.Client {
+	instance := client_raw.New()
 	instance.Login()
 	var listDCInfo []types.TelegramDCInfo
 	var listStatus []types.TelegramDCStatus
@@ -33,8 +34,9 @@ func TelegramServerChecker() *types.TelegramCheckerClient {
 			})
 		}
 	}
+
 	fmt.Println("\nStarted Telegram DC Checker!")
-	return &types.TelegramCheckerClient{
+	return &client_telegram.Client{
 		Client:       &instance,
 		FilesDC:      listDCInfo,
 		StatusDC:     listStatus,
