@@ -4,7 +4,7 @@ import (
 	"net"
 )
 
-// Map for datanceter IPs
+// Map for DataCenter IPs
 var dcIPs = map[int8]net.IP{
 	1: net.ParseIP("149.154.175.50"),
 	2: net.ParseIP("149.154.167.50"),

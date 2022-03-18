@@ -53,18 +53,18 @@ func (tg *Client) Run() {
 					tg.StatusDC[i].LastLag = t.Unix()
 				}
 				listStatus = append(listStatus, types.TelegramDCStatus{
-					tg.FilesDC[i].ID,
-					pingResult,
-					res,
-					tg.StatusDC[i].LastDown,
-					tg.StatusDC[i].LastLag,
+					Id:       tg.FilesDC[i].ID,
+					Ping:     pingResult,
+					Status:   res,
+					LastDown: tg.StatusDC[i].LastDown,
+					LastLag:  tg.StatusDC[i].LastLag,
 				})
-
 				_ = os.Remove(fmt.Sprintf("%s/td_files/animations/st-%d.gif.mp4", consts.TdSessionFiles, tg.FilesDC[i].ID))
 			} else {
 				listStatus = append(listStatus, tg.StatusDC[i])
 			}
 		}
+		fmt.Println(listStatus)
 		tg.StatusDC = listStatus
 		tg.IsRefreshing = false
 		t = time.Now()
