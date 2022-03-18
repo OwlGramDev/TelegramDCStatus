@@ -64,7 +64,6 @@ func (tg *Client) Run() {
 				listStatus = append(listStatus, tg.StatusDC[i])
 			}
 		}
-		fmt.Println(listStatus)
 		tg.StatusDC = listStatus
 		tg.IsRefreshing = false
 		t = time.Now()
