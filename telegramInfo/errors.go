@@ -4,4 +4,4 @@ import (
 	"errors"
 )
 
-var ErrWrongDCID = errors.New("wrong datacenter id")
+var ErrWrongDCID = errors.New("wrong Datacenter id")

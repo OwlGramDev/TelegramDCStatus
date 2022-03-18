@@ -15,7 +15,7 @@ func (context *Context) Login() {
 			_, _ = fmt.Scanln(&number)
 			_, err := context.Client.SendPhoneNumber(number)
 			if err != nil {
-				fmt.Printf("Error sending phone number: %v", err)
+				fmt.Printf("\nError sending phone number: %v", err)
 			}
 		} else if currentState.GetAuthorizationStateEnum() == tdLib.AuthorizationStateWaitCodeType {
 			fmt.Print("\nEnter Code: ")
@@ -23,7 +23,7 @@ func (context *Context) Login() {
 			_, _ = fmt.Scanln(&code)
 			_, err := context.Client.SendAuthCode(code)
 			if err != nil {
-				fmt.Printf("Error sending auth code : %v", err)
+				fmt.Printf("\nError sending auth code : %v", err)
 			}
 		} else if currentState.GetAuthorizationStateEnum() == tdLib.AuthorizationStateWaitPasswordType {
 			fmt.Print("\nEnter Password: ")
@@ -31,7 +31,7 @@ func (context *Context) Login() {
 			_, _ = fmt.Scanln(&password)
 			_, err := context.Client.SendAuthPassword(password)
 			if err != nil {
-				fmt.Printf("Error sending auth password: %v", err)
+				fmt.Printf("\nError sending auth password: %v", err)
 			}
 		} else if currentState.GetAuthorizationStateEnum() == tdLib.AuthorizationStateReadyType {
 			break
