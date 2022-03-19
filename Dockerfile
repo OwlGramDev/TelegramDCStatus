@@ -1,5 +1,6 @@
 ARG dname="amd64"
 FROM laky64/tdlib:linux-${dname} AS golang
+RUN apt install make libc++-dev libc++abi-dev -y
 RUN git clone https://github.com/OwlGramDev/TelegramDCStatus
 RUN cd TelegramDCStatus && go build -o /usr/src/outputs/TgStatus .
 WORKDIR /usr/src/file_manager
