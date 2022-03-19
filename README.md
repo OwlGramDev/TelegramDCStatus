@@ -7,5 +7,6 @@ to install this script
 ### Install LIBC DEV & ABI
 ```apt-get install libc++-dev libc++abi-dev```
 
-## DOWNLOAD COMPILED FILES
-#### WIK....
+### CURRENTLY SUPPORTED ONLY ON LINUX x86_64
+
+[DOWNLOAD COMPILED FILES](https://github.com/OwlGramDev/TelegramDCStatus/actions)

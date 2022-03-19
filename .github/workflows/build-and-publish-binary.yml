@@ -17,12 +17,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        arch-image-names: [ 'amd64', 'arm32v7']
+        arch-image-names: [ 'amd64' ]
         include:
           - arch-image-names: 'amd64'
             arch-run-names: 'linux/amd64'
-          - arch-image-names: 'arm32v7'
-            arch-run-names: 'linux/arm32/v7'
     steps:
       - name: Get Branch Name
         run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
