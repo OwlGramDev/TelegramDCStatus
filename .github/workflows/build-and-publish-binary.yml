@@ -1,0 +1,52 @@
+
+name: Build Binary
+on:
+  push:
+    branches: [ master]
+    paths-ignore:
+      - '.gitignore'
+      - '.build-and-publish-binary.yaml'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'README.md'
+      - '.github/*'
+
+jobs:
+  linux-build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        arch-image-names: [ 'amd64' ]
+        include:
+          - arch-image-names: 'amd64'
+            arch-run-names: 'linux/amd64'
+    steps:
+      - name: Get Branch Name
+        run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+        id: github_info
+      - name: Checkout ${{ steps.github_info.outputs.branch }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.github_info.outputs.branch }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+      - name: Enable multi-arch support
+        run: |
+          echo '{"experimental": true}' | sudo tee /etc/docker/daemon.json > /dev/null
+          sudo systemctl restart docker
+      - name: Build Docker Image
+        run: |
+          docker buildx build --load --build-arg dname="${{ matrix.arch-image-names }}" --platform ${{ matrix.arch-run-names }} -t tgstatus:${{ matrix.arch-image-names }} . -f Dockerfile
+      - name: Run Docker Image
+        run: |
+          docker run --platform "${{ matrix.arch-image-names }}" -v "$PWD":/usr/src/mnt tgstatus:${{ matrix.arch-image-names }} ./linux_mount.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Release-${{ matrix.arch-image-names }}
+          path: /usr/src/mnt/output/TgStatus
