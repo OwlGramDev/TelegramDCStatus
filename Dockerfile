@@ -1,6 +1,6 @@
 ARG dname="amd64"
 FROM laky64/tdlib:linux-${dname} AS golang
-COPY TelegramDCStatus/* .
+RUN git clone https://github.com/OwlGramDev/TelegramDCStatus
 RUN cd TelegramDCStatus && go build -o /usr/src/outputs/TgStatus .
 WORKDIR /usr/src/file_manager
 COPY linux_mount.sh /usr/src/file_manager
