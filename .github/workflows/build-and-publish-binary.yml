@@ -46,7 +46,9 @@ jobs:
       - name: Run Docker Image
         run: |
           docker run --platform "${{ matrix.arch-image-names }}" -v "$PWD":/usr/src/mnt tgstatus:${{ matrix.arch-image-names }} ./linux_mount.sh
-      - uses: actions/upload-artifact@v2
+      - uses: svenstaro/upload-release-action@v2
         with:
-          name: Linux-${{ matrix.arch-image-names }}
-          path: output/TgStatus
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: output/TgStatus
+          asset_name: Linux-${{ matrix.arch-image-names }}
+          tag: "#latest"
