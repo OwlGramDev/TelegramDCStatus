@@ -2,7 +2,7 @@
 name: Build Binary
 on:
   push:
-    branches: [ master]
+    branches: [ main ]
     paths-ignore:
       - '.gitignore'
       - '.build-and-publish-binary.yaml'
