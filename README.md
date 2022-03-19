@@ -9,4 +9,4 @@ to install this script
 
 ### CURRENTLY SUPPORTED ONLY ON LINUX x86_64
 
-[DOWNLOAD COMPILED FILES](https://github.com/OwlGramDev/TelegramDCStatus/actions)
+[DOWNLOAD COMPILED FILES](https://github.com/OwlGramDev/TelegramDCStatus/releases)
