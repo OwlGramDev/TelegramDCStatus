@@ -51,4 +51,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: output/TgStatus
           asset_name: Linux-${{ matrix.arch-image-names }}
-          tag: "#latest"
+          tag: "TgStatus Releases"
